@@ -9,6 +9,20 @@ variables:
   - group: image-cred
 
 stages:
+  - stage: Sonarcube
+    displayName: Sonarcube login
+    jobs:
+      - job: 
+        steps:
+        - task: SonarQubePrepare@7
+          inputs:
+            SonarQube: 'sonarqube'
+            scannerMode: 'cli'
+            configMode: 'manual'
+            cliProjectKey: 'laravel'
+            cliProjectName: 'laravel'
+            cliSources: '.'
+
   - stage: DockerLogin
     displayName: Docker Login
     jobs:
