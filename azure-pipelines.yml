@@ -74,34 +74,31 @@ stages:
 
 
   - stage: CodePush
-    displayName: Checkout and Push Code to Another Repo
-    dependsOn: ImagePush
+    displayName: Push Code to Another Repo
     jobs:
-      - job: CheckoutAndPush
+      - job: PushToGitHub
         steps:
           - checkout: self
-
           - script: |
+              # Update your files (if needed)
               sed -i 's|image: $(IMAGE_NAME):.*|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
-
+              
+              # Configure Git
               git config --global user.email "amuthakrishna1988@gmail.com"
               git config --global user.name "amuthakrishna"
-
-              if ! git remote | grep -q target; then
-                git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git
-              fi
-
-              git fetch origin
-              git checkout -b temp-push-branch
-
-              echo "Staging files..."
-              git status
-              git add k8s || true
-              git diff-index --quiet HEAD || git commit -m "Move to Live"
-
-              echo "Pushing to target..."
-              git push -f target temp-push-branch:main
-            displayName: 'Fix Remote Push to GitHub'
+              
+              # Clone the target repository
+              git clone https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git lamp-ticket-cd
+              
+              # Copy your files to the target repository
+              cp -r k8s/* lamp-ticket-cd/
+              
+              # Push changes to the target repository
+              cd lamp-ticket-cd
+              git add .
+              git commit -m "Update deployment with image tag $(IMAGE_TAG)"
+              git push
+            displayName: 'Push to Target Repository'
 
 
 
