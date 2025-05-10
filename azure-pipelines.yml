@@ -82,22 +82,27 @@ stages:
           - checkout: self
 
           - script: |
-              # Replace image tag in deployment manifest
               sed -i 's|image: $(IMAGE_NAME):.*|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
 
-              # Git user config
               git config --global user.email "amuthakrishna1988@gmail.com"
               git config --global user.name "amuthakrishna"
 
-              # Add remote
-              git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git
+              if ! git remote | grep -q target; then
+                git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git
+              fi
 
-              # Create temp branch and push to target main
+              git fetch origin
               git checkout -b temp-push-branch
-              git add k8s
-              git commit -m 'Move to Live'
+
+              echo "Staging files..."
+              git status
+              git add k8s || true
+              git diff-index --quiet HEAD || git commit -m "Move to Live"
+
+              echo "Pushing to target..."
               git push -f target temp-push-branch:main
-            displayName: 'Initial Push to Empty Repo'
+            displayName: 'Fix Remote Push to GitHub'
+
 
 
 
