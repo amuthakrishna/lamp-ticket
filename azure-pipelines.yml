@@ -91,7 +91,7 @@ stages:
               git clone https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git lamp-ticket-cd
               
               # Copy your files to the target repository
-              cp -r k8s/* lamp-ticket-cd/
+              cp -r k8s lamp-ticket-cd/
               
               # Push changes to the target repository
               cd lamp-ticket-cd
