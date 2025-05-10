@@ -85,15 +85,25 @@ stages:
               # Replace image tag
               sed -i 's|image: $(IMAGE_NAME):.*|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
 
+              # Git config
               git config --global user.email "amuthakrishna1988@gmail.com"
               git config --global user.name "amuthakrishna"
 
-              git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git || true
-              git fetch target
-              git merge target/main --allow-unrelated-histories --no-edit || true
+              # Clean remote and re-add to avoid 'already exists' error
+              git remote remove target 2>/dev/null || true
+              git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git
 
+              # Fetch and pull remote using conflict-safe strategy
+              git fetch target
+              git checkout main
+              git pull target main --strategy=recursive -X theirs --allow-unrelated-histories --no-edit || true
+
+              # Add and commit changes
               git add k8s
               git commit -m 'Move to Live' || echo "Nothing to commit"
-              git push target HEAD:main
-            displayName: 'Pull, Merge and Push to lamp-ticket-cd'
+
+              # Push to target repo
+              git push target main
+            displayName: 'Safe Pull, Merge and Push to lamp-ticket-cd'
+
 
