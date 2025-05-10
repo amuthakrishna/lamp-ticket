@@ -9,10 +9,10 @@ variables:
   - group: image-cred
 
 stages:
-  - stage: Sonarcube
-    displayName: Sonarcube login
+  - stage: Sonarqube
+    displayName: Sonarqube login
     jobs:
-      - job: 
+      - job: Sonarqube
         steps:
         - task: SonarQubePrepare@7
           inputs:
@@ -27,13 +27,46 @@ stages:
         - task: SonarQubePublish@7
           inputs:
             pollingTimeoutSec: '300'
-
+          displayName: 'Publish SonarQube Report'
+          
   - stage: DockerLogin
     displayName: Docker Login
+    dependsOn: Sonarqube
     jobs:
       - job: DockerLogin
         steps: 
           - script: |
               echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
             displayName: 'Docker Login'
+
+  - stage: DockerBuild
+    displayName: Build 
+    dependsOn: DockerLogin
+    jobs:
+      - job: DockerBuild
+        steps:
+          - script: |
+              echo "Building image..."
+              docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+            displayName: 'DockerBuild'      
+
+  - stage: ScanTrivy
+    displayName: ScanTrivy 
+    dependsOn: DockerBuild
+    jobs:
+      - job: ScanTrivy
+        steps:
+          - script: |        
+              trivy image --severity HIGH,CRITICAL $(IMAGE_NAME):$(IMAGE_TAG)
+            displayName: 'ScanTrivy'                  
+
+  - stage: ImagePush
+    displayName: Image Push
+    dependsOn: ScanTrivy
+    jobs:
+      - job: DockerBuildPush
+        steps:
+          - script: |
+              docker push $(IMAGE_NAME):$(IMAGE_TAG)
+            displayName: 'Push Image'                     
 
