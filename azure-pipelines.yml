@@ -22,6 +22,11 @@ stages:
             cliProjectKey: 'laravel'
             cliProjectName: 'laravel'
             cliSources: '.'
+        - task: SonarQubeAnalyze@7
+          displayName: 'Run SonarQube Scanner'
+        - task: SonarQubePublish@7
+          inputs:
+            pollingTimeoutSec: '300'
 
   - stage: DockerLogin
     displayName: Docker Login
