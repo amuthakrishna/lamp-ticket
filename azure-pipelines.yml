@@ -7,10 +7,13 @@ pool:
 variables:
   - group: docker-creds
   - group: image-cred
+  - group: github_token
+  - name: IMAGE_TAG
+    value: $(Build.BuildId)
 
 stages:
   - stage: Sonarqube
-    displayName: Sonarqube login
+    displayName: SonarQube
     jobs:
       - job: Sonarqube
         steps:
@@ -28,7 +31,7 @@ stages:
           inputs:
             pollingTimeoutSec: '300'
           displayName: 'Publish SonarQube Report'
-          
+
   - stage: DockerLogin
     displayName: Docker Login
     dependsOn: Sonarqube
@@ -40,13 +43,12 @@ stages:
             displayName: 'Docker Login'
 
   - stage: DockerBuild
-    displayName: Build 
+    displayName: Build Docker Image
     dependsOn: DockerLogin
     jobs:
       - job: DockerBuild
         steps:
           - script: |
-              echo "Building image..."
               docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
             displayName: 'DockerBuild'      
 
@@ -61,7 +63,7 @@ stages:
             displayName: 'ScanTrivy'                  
 
   - stage: ImagePush
-    displayName: Image Push
+    displayName: Push Docker Image
     dependsOn: ScanTrivy
     jobs:
       - job: DockerBuildPush
@@ -70,3 +72,26 @@ stages:
               docker push $(IMAGE_NAME):$(IMAGE_TAG)
             displayName: 'Push Image'                     
 
+
+  - stage: CodePush
+    displayName: Checkout and Push Code to Another Repo
+    dependsOn: ImagePush
+    jobs:
+      - job: CheckoutAndPush
+        steps:
+          - checkout: self
+
+          - script: |
+              # Replace image tag in the deployment YAML
+              sed -i 's|image: $(IMAGE_NAME):.*|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
+
+              git config --global user.email "amuthakrishna1988@gmail.com"
+              git config --global user.name "amuthakrishna"
+
+              # Add target repo as a remote
+              git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git
+
+              git add k8s
+              git commit -m 'Move to Live'
+              git push target HEAD:main
+            displayName: 'Push to lamp-ticket-cd repo'
