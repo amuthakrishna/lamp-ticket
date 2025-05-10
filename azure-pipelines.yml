@@ -82,28 +82,22 @@ stages:
           - checkout: self
 
           - script: |
-              # Replace image tag
+              # Replace image tag in deployment manifest
               sed -i 's|image: $(IMAGE_NAME):.*|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
 
-              # Git config
+              # Git user config
               git config --global user.email "amuthakrishna1988@gmail.com"
               git config --global user.name "amuthakrishna"
 
-              # Clean remote and re-add to avoid 'already exists' error
-              git remote remove target 2>/dev/null || true
+              # Add remote
               git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git
 
-              # Fetch and pull remote using conflict-safe strategy
-              git fetch target
-              git checkout main
-              git pull target main --strategy=recursive -X theirs --allow-unrelated-histories --no-edit || true
-
-              # Add and commit changes
+              # Create temp branch and push to target main
+              git checkout -b temp-push-branch
               git add k8s
-              git commit -m 'Move to Live' || echo "Nothing to commit"
+              git commit -m 'Move to Live'
+              git push -f target temp-push-branch:main
+            displayName: 'Initial Push to Empty Repo'
 
-              # Push to target repo
-              git push target main
-            displayName: 'Safe Pull, Merge and Push to lamp-ticket-cd'
 
 
