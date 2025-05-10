@@ -82,16 +82,18 @@ stages:
           - checkout: self
 
           - script: |
-              # Replace image tag in the deployment YAML
+              # Replace image tag
               sed -i 's|image: $(IMAGE_NAME):.*|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
 
               git config --global user.email "amuthakrishna1988@gmail.com"
               git config --global user.name "amuthakrishna"
 
-              # Add target repo as a remote
-              git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git
+              git remote add target https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git || true
+              git fetch target
+              git merge target/main --allow-unrelated-histories --no-edit || true
 
               git add k8s
-              git commit -m 'Move to Live'
+              git commit -m 'Move to Live' || echo "Nothing to commit"
               git push target HEAD:main
-            displayName: 'Push to lamp-ticket-cd repo'
+            displayName: 'Pull, Merge and Push to lamp-ticket-cd'
+
