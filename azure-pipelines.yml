@@ -80,8 +80,16 @@ stages:
         steps:
           - checkout: self
           - script: |
-              # Update your files (if needed)
-              sed -i 's|image: $(IMAGE_NAME):.*|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
+              # Print current content for debugging
+              echo "Current app-deployment.yaml content:"
+              cat k8s/app-deployment.yaml
+              
+              # Update the image tag correctly
+              sed -i 's|image: krishnamoorthy1/laravel-k8s:latest|image: $(IMAGE_NAME):$(IMAGE_TAG)|' k8s/app-deployment.yaml
+              
+              # Print updated content to verify
+              echo "Updated app-deployment.yaml content:"
+              cat k8s/app-deployment.yaml
               
               # Configure Git
               git config --global user.email "amuthakrishna1988@gmail.com"
@@ -90,7 +98,7 @@ stages:
               # Clone the target repository
               git clone https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git lamp-ticket-cd
               
-              # Copy your files to the target repository
+              # Copy your files to the target repository (copying the whole directory is correct)
               cp -r k8s lamp-ticket-cd/
               
               # Push changes to the target repository
