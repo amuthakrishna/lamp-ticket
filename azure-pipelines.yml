@@ -107,7 +107,3 @@ stages:
               git commit -m "Update deployment with image tag $(IMAGE_TAG)"
               git push
             displayName: 'Push to Target Repository'
-
-
-
-
