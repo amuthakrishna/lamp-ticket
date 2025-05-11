@@ -44,8 +44,10 @@ spec:
         app: laravel-web
     spec:
       containers:
-      - name: laravelapps
+      - name: laravel-application
         image: krishnamoorthy1/laravel-k8s:latest
+        command: ["php", "artisan", "serve"]
+        args: ["--host=0.0.0.0", "--port=8000"]
         ports:
         - containerPort: 8000
         env:
@@ -75,7 +77,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 8000
+  - port: 80
     targetPort: 8000
   selector:
     app: laravel-web        
