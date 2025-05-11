@@ -63,8 +63,8 @@ RUN php artisan config:clear \
     && php artisan route:cache \
     && php artisan optimize
 
-RUN chown -R www-data:www-data /var/www/html && chmod -R 777 /var/www/html
-RUN chown -R www-data:www-data /var/www/html/storage
+
+RUN chown -R www-data:www-data /var/www/html/storage && chmod -R 777 /var/www/html/storage
 # Expose port 8000 for Laravel development server
 EXPOSE 8000
 
