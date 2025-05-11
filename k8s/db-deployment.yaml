@@ -5,10 +5,11 @@ metadata:
   namespace: web
 type: Opaque
 data:
-  MYSQL_ROOT_PASSWORD: cm9vdA==
-  DB_USERNAME: YWR1c2Vy
-  DB_PASSWORD: YWR1c2Vy
-  DB_DATABASE: bGFyYXZlbA==
+  MYSQL_ROOT_PASSWORD: cm9vdA==      # "root"
+  DB_USERNAME: YWR1c2Vy              # "aduser"
+  DB_PASSWORD: YWR1c2Vy              # "aduser"
+  DB_DATABASE: bGFyYXZlbA==          # "laravel"
+
 
   
 ---
