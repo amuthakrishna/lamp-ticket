@@ -96,16 +96,16 @@ stages:
               git config --global user.name "amuthakrishna"
               
               # Clone the target repository
-              git clone https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git lamp-ticket-cd
+              git clone https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git lamp-ticket-cd-new
               
               # Copy your files to the target repository (copying the whole directory is correct)
-              cp -r k8s lamp-ticket-cd/
+              cp -r k8s/* lamp-ticket-cd-new
               
               # Push changes to the target repository
-              cd lamp-ticket-cd
+              cd lamp-ticket-cd-new
               git add .
               git commit -m "Update deployment with image tag $(IMAGE_TAG)"
               git push
             displayName: 'Push to Target Repository'
 
-            
+
