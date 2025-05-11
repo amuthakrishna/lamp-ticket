@@ -53,15 +53,18 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 WORKDIR /var/www/html
 
 COPY laravel .
-RUN chown -R www-data:www-data /var/www/html && chmod -R 777 /var/www/html
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN composer update --prefer-dist --no-interaction
-RUN composer dump-autoload 
-RUN php artisan config:clear \
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 777 /var/www/html \
+    && chown -R www-data:www-data /var/www/html/storage \
+    && composer update --prefer-dist --no-interaction \
+    && composer dump-autoload \
+    && php artisan config:clear \
     && php artisan config:cache \
     && php artisan route:clear \
     && php artisan route:cache \
-    && php artisan optimize
+    && php artisan optimize \
+    && chown -R www-data:www-data /var/www/html/storage \
+    && chmod -R 777 /var/www/html/storage
 
 
 

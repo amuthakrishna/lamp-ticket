@@ -24,7 +24,7 @@ stages:
             configMode: 'manual'
             cliProjectKey: 'laravel'
             cliProjectName: 'laravel'
-            cliSources: '.'
+            cliSources: 'laravel'
         - task: SonarQubeAnalyze@7
           displayName: 'Run SonarQube Scanner'
         - task: SonarQubePublish@7

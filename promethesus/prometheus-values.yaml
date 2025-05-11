@@ -1,9 +1,0 @@
-server:
-  persistentVolume:
-    enabled: true
-    size: 10Gi
-  retention: 15d
-alertmanager:
-  persistentVolume:
-    enabled: true
-    size: 5Gi
