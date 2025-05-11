@@ -74,7 +74,7 @@ stages:
 
 
   - stage: CodePush
-    displayName: Push Code to Another Repo
+    displayName: Move to ArgoCD
     jobs:
       - job: PushToGitHub
         steps:

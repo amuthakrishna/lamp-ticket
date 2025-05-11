@@ -12,7 +12,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/home/pinnacleseven/Documents/lamp-ticket/laravel/storage"
-    type: Directory
+    
     
 ---      
 
