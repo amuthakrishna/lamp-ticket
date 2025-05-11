@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: laravel-application
-        image: $(IMAGE_NAME):$(IMAGE_TAG)
+        image: ${IMAGE_WITH_TAG}
      #   command: ["php", "artisan", "serve"]
      #   args: ["--host=0.0.0.0", "--port=8000"]
         ports:
