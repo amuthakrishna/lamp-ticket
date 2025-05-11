@@ -53,7 +53,7 @@ stages:
             displayName: 'DockerBuild'      
 
   - stage: ScanTrivy
-    displayName: Scan Docker Image
+    displayName: Trivy Scan Docker Image
     dependsOn: DockerBuild
     jobs:
       - job: ScanTrivy
@@ -108,5 +108,3 @@ stages:
               git push
             displayName: 'Push to Target Repository'
             
-
-
