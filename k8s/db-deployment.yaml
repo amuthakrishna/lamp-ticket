@@ -4,10 +4,10 @@ metadata:
   name: mysql-secret
 type: Opaque
 stringData:
-  mysql-root-password: "toshiba"
+  mysql-root-password: "root"
   mysql-user: "aduser"
   mysql-password: "aduser"
-  mysql-database: "veggold_master"
+  mysql-database: "laravel"
   
 ---
 

@@ -52,7 +52,7 @@ spec:
         - name: DB_USERNAME
           value: "aduser"
         - name: DB_DATABASE
-          value: "veggold_master"
+          value: "laravel"
         - name: DB_PASSWORD
           value: "aduser"  # Consider using secrets for passwords
         - name: DB_HOST
@@ -61,7 +61,7 @@ spec:
           value: "3306"
         volumeMounts:
         - name: laravel-storage
-          mountPath: /mnt/projects/veggold  # Changed to standard Laravel path
+          mountPath: /var/www/html  # Changed to standard Laravel path
       volumes:      # Moved volumes to correct level
       - name: laravel-storage
         persistentVolumeClaim:
