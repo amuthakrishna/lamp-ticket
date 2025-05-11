@@ -96,13 +96,13 @@ stages:
               git config --global user.name "amuthakrishna"
               
               # Clone the target repository
-              git clone https://$(GITHUB_TOKEN)@github.com/amuthakrishna/lamp-ticket-cd.git lamp-ticket-cd-new
+              git clone https://$(GITHUB_TOKEN)@github.com/amuthakrishna/argocd.git argocd
               
               # Copy your files to the target repository (copying the whole directory is correct)
-              cp -r k8s/* lamp-ticket-cd-new
+              cp -r k8s argocd
               
               # Push changes to the target repository
-              cd lamp-ticket-cd-new
+              cd argocd
               git add .
               git commit -m "Update deployment with image tag $(IMAGE_TAG)"
               git push
